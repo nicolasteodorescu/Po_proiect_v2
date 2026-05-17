@@ -47,15 +47,12 @@ public:
 std::ostream& operator<<(std::ostream& os, const Team& t);
 std::istream& operator>>(std::istream& is, Team& t);
 
-// ─────────────────────────────────────────────
-// DraftTeam : public Team
-// ─────────────────────────────────────────────
 class DraftTeam : public Team {
 private:
     std::vector<std::string> bannedChampions;
     std::vector<std::string> pickOrder;
     int  currentPickIndex;
-    bool side;   // false = blue, true = red
+    bool side;
 
 public:
     DraftTeam(const std::string& name, bool redSide = false);
