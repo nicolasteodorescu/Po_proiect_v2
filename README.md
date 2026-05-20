@@ -1,4 +1,8 @@
-# Proiect Poo League of legends
+# Proiect Poo League of Legends
+
+## Descriere
+Acesta este un proiect la POO. Cerintele acestuia sunt mai jos, iar programul este un simulator de date despre jocul League of Legends.
+El detine informatii despre win rate-ul campionilor, rolurile acestora si confera analize despre drafturi.
 
 ## Instrucțiuni de compilare
 
