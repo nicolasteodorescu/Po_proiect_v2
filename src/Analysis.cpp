@@ -4,9 +4,13 @@
 
 Analysis::Analysis() : championPool("Global Champion Pool") {}
 
-Analysis& Analysis::getInstance(){
+Analysis& Analysis::getGlobalInstance(){
     static Analysis instance;
     return instance;
+}
+
+Analysis& Analysis::getInstance(){
+    return getGlobalInstance();
 }
 
 void Analysis::registerChampion( std::shared_ptr<Champion> champ ){
@@ -99,7 +103,7 @@ void Analysis::printLog() const {
 
 const RankedList<Champion>& Analysis::getChampionPool() const { return championPool; }
 
-MinorData& MinorData::getInstance(){
+MinorData& MinorData::getInstance() {
     static MinorData instance;
     return instance;
 }

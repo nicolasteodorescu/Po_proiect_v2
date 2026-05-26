@@ -67,7 +67,7 @@ public:
     [[nodiscard]] size_t size() const {
         return items.size();
     }
-    [[nodiscard]] bool   empty() const {
+    [[nodiscard]] bool empty() const {
         return items.empty();
     }
 
@@ -138,11 +138,12 @@ protected:
 public:
     virtual ~Analysis() = default;
 
-    static Analysis& getInstance();
+    static Analysis& getGlobalInstance();
+    virtual Analysis& getInstance();
 
     void registerChampion( std::shared_ptr<Champion> champ );
 
-    void   addMatchup( const std::string& c1, const std::string& c2, double wr );
+    void addMatchup( const std::string& c1, const std::string& c2, double wr );
     [[nodiscard]] double getMatchupWinRate( const std::string& c1, const std::string& c2 ) const;
 
     virtual double analyzeDraft( const Team* blue, const Team* red ) const;
@@ -159,13 +160,13 @@ public:
 
 class MinorData : public Analysis {
 public:
-    static MinorData& getInstance();
+    MinorData& getInstance() override;
     double analyzeDraft( const Team* blue, const Team* red ) const override;
 };
 
 class MajorData : public Analysis {
 public:
-    static MajorData& getInstance();
+    MajorData& getInstance() override;
     static std::string metaShift( const Team* team, double& bonusOut ) ;
     double analyzeDraft( const Team* blue, const Team* red ) const override;
 };
