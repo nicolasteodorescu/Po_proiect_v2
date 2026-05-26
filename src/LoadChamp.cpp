@@ -352,12 +352,6 @@ void LoadChamp::demonstratePolymorphism(
     for( const auto& teamPtr : teams ){
         const Team* base = teamPtr.get();
         base->display();
-
-        if( const auto* dt = dynamic_cast<const DraftTeam*>(base) ){
-            std::cout << "  [Downcast OK -> DraftTeam] side="
-                      << (dt->isRedSide() ? "Red" : "Blue")
-                      << " bans=" << dt->getBans().size() << "\n";
-        }
     }
     std::unique_ptr<RankedList<Champion>> ranked =
         LoadChamp::createRankedPool(rankChoice, engine.getChampionPool());

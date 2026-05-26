@@ -25,15 +25,6 @@ void Entity::display() const { std::cout << *this << "\n"; }
 const std::string& Entity::getName() const {
     return name;
 }
-const std::string& Entity::getDescription() const {
-    return description;
-}
-int  Entity::getLiveInstances() {
-    return instCnt;
-}
-void Entity::resetInstanceCount() {
-    instCnt = 0;
-}
 
 bool Entity::operator<( const Entity& other ) const {
     return getWinRate() < other.getWinRate();
@@ -146,12 +137,3 @@ double Champion::getSynergyWith( const std::string& cname ) const {
 }
 
 Champion::Role Champion::getRole() const { return role; }
-double Champion::getPickRate() const {
-    return pickRate;
-}
-double Champion::getBanRate() const {
-    return banRate;
-}
-const std::string& Champion::getTopChampionName() {
-    return topChampionName;
-}

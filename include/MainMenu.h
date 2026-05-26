@@ -12,14 +12,11 @@ class MainMenu {
 private:
     Analysis& engine;
 
-    void demoExceptions() const;
-
     void menuTierList() const;
     void menuRecommend() const;
     void menuDraftAnalysis();
     void menuSearchChampion() const;
     void menuLog() const;
-    void menuAutoDemo() const;
 
     static void printResultDraft( double score );
 

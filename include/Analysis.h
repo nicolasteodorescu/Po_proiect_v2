@@ -87,10 +87,6 @@ class LowRank : public RankedList<Champion> {
 public:
     explicit LowRank( const std::string& name ) : RankedList<Champion>(name) {}
 
-    static double randomWin() {
-        return static_cast<double>(rand() % 7) - 3.0;
-    }
-
     void applyRankBonus() override {
         for( auto& c : items ){
             Champion::Role r = c->getRole();

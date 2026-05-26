@@ -26,7 +26,6 @@ public:
     friend std::istream& operator>>( std::istream& is, Team& t );
 
     virtual void addChampion( std::shared_ptr<Champion> champ );
-    void removeChampion( const std::string& name );
 
     [[nodiscard]] virtual double getAverageWinRate() const;
     [[nodiscard]] double getTeamSynergy() const;
@@ -36,11 +35,9 @@ public:
     const Champion& operator[]( int idx ) const;
 
     [[nodiscard]] const std::string& getName() const;
-    [[nodiscard]] int  getSize() const;
     [[nodiscard]] bool isFull() const;
 
     [[nodiscard]] const std::vector<std::shared_ptr<Champion>>& getRoster() const;
-    static int getTotalTeamsCreated();
 };
 
 std::ostream& operator<<( std::ostream& os, const Team& t );
@@ -65,7 +62,6 @@ public:
     void display() const override;
 
     [[nodiscard]] bool isRedSide() const;
-    [[nodiscard]] int getCurrentPickIndex() const;
     [[nodiscard]] const std::vector<std::string>& getBans() const;
 };
 

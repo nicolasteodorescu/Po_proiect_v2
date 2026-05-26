@@ -55,10 +55,7 @@ public:
     virtual void display() const;
 
     [[nodiscard]] const std::string& getName() const;
-    [[nodiscard]] const std::string& getDescription() const;
 
-    static int  getLiveInstances();
-    static void resetInstanceCount();
 
     bool operator<( const Entity& other ) const;
     bool operator==( const Entity& other ) const;
@@ -81,16 +78,14 @@ public:
 
     static std::string roleToString( Role r );
 
-    Champion( const std::string& name, Role role,
-              double winRate, double pickRate, double banRate,
-              const std::string& desc = "" );
+    Champion( const std::string& name, Role role, double winRate, double pickRate, double banRate, const std::string& desc = "" );
     Champion( const std::string& name, Role role, double winRate );
 
     Champion( const Champion& other );
     Champion& operator=( const Champion& other );
     ~Champion() override = default;
 
-    void        setWinRate( double wr );
+    void setWinRate( double wr );
     [[nodiscard]] double getWinRate() const override;
     [[nodiscard]] std::string getType() const override;
     void display() const override;
@@ -101,10 +96,6 @@ public:
     [[nodiscard]] double getSynergyWith( const std::string& champName ) const;
 
     [[nodiscard]] Role getRole() const;
-    [[nodiscard]] double getPickRate() const;
-    [[nodiscard]] double getBanRate() const;
-
-    static const std::string& getTopChampionName();
 };
 
 #endif // OOP_ENTITY_H

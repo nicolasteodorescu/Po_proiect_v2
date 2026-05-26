@@ -21,7 +21,7 @@ Team::Team( const Team& other )
 Team& Team::operator=( const Team& other ){
     if( this != &other ){
         teamName = other.teamName;
-        roster   = other.roster;
+        roster = other.roster;
     }
     return *this;
 }
@@ -30,15 +30,6 @@ void Team::addChampion( std::shared_ptr<Champion> champ ){
     if( isFull() )
         throw TeamFullException(teamName);
     roster.push_back(champ);
-}
-
-void Team::removeChampion( const std::string& name ){
-    auto it = std::find_if(roster.begin(), roster.end(),
-        [&name]( const auto& c ){
-            return c->getName() == name;
-        });
-    if( it != roster.end() )
-        roster.erase(it);
 }
 
 double Team::getAverageWinRate() const {
@@ -67,18 +58,19 @@ const Champion& Team::operator[]( int idx ) const {
     return *roster[idx];
 }
 
-const std::string& Team::getName() const { return teamName; }
-int  Team::getSize() const { return static_cast<int>(roster.size()); }
-bool Team::isFull()  const { return static_cast<int>(roster.size()) == MAX_SIZE; }
+const std::string& Team::getName() const {
+    return teamName;
+}
+bool Team::isFull()  const {
+    return static_cast<int>(roster.size()) == MAX_SIZE;
+}
 
 const std::vector<std::shared_ptr<Champion>>& Team::getRoster() const {
     return roster;
 }
 
-int Team::getTotalTeamsCreated() { return numberTeams; }
-
 std::ostream& operator<<( std::ostream& os, const Team& t ){
-    os << "=== Team: " << t.teamName
+    os << "Team: " << t.teamName
        << " (" << t.roster.size() << "/" << Team::MAX_SIZE << ") ===\n";
     for( const auto& c : t.roster )
         os << "  * " << c->getName()
@@ -103,10 +95,10 @@ DraftTeam::DraftTeam( const DraftTeam& other ) = default;
 DraftTeam& DraftTeam::operator=( const DraftTeam& other ){
     if( this != &other ){
         Team::operator=(other);
-        bannedChampions  = other.bannedChampions;
-        pickOrder        = other.pickOrder;
+        bannedChampions = other.bannedChampions;
+        pickOrder = other.pickOrder;
         currentPickIndex = other.currentPickIndex;
-        side             = other.side;
+        side = other.side;
     }
     return *this;
 }
@@ -127,8 +119,7 @@ void DraftTeam::banChampion( const std::string& name ){
 }
 
 bool DraftTeam::isChampionBanned( const std::string& name ) const {
-    return std::find(bannedChampions.begin(), bannedChampions.end(), name)
-           != bannedChampions.end();
+    return std::find(bannedChampions.begin(), bannedChampions.end(), name) != bannedChampions.end();
 }
 
 void DraftTeam::display() const {
@@ -142,6 +133,9 @@ void DraftTeam::display() const {
     }
 }
 
-bool DraftTeam::isRedSide()           const { return side; }
-int  DraftTeam::getCurrentPickIndex() const { return currentPickIndex; }
-const std::vector<std::string>& DraftTeam::getBans() const { return bannedChampions; }
+bool DraftTeam::isRedSide() const {
+    return side;
+}
+const std::vector<std::string>& DraftTeam::getBans() const {
+    return bannedChampions;
+}
