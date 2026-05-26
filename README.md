@@ -1,12 +1,8 @@
-# Nu primesc notă pentru că nu am pus titlu și descriere
+# Proiect Poo League of Legends
 
-### Folosiți template-ul corespunzător grupei voastre!
-
-| Laborant  | Link template                                |
-|-----------|----------------------------------------------|
-| Dragoș B  | https://github.com/Ionnier/oop-template      |
-| Tiberiu M | https://github.com/MaximTiberiu/oop-template |
-| Marius MC | https://github.com/mcmarius/oop-template     |
+## Descriere
+Acesta este un proiect la POO. Cerintele acestuia sunt mai jos, iar programul este un simulator de date despre jocul League of Legends.
+El detine informatii despre win rate-ul campionilor, rolurile acestora si confera analize despre drafturi.
 
 ## Instrucțiuni de compilare
 
