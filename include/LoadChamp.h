@@ -20,7 +20,7 @@ private:
 public:
     static void loadMatchupData( const std::string& jsonPath = "lolalytics_all_172.json" );
     static void loadChampionData( Analysis& engine, const std::string& jsonPath = "lolalytics_all_172.json" );
-    static void demonstratePolymorphism( const std::vector<std::shared_ptr<Team>>& teams, Analysis& engine, int rankChoice );
+    static void demonstratePolymorphism( const std::vector<std::shared_ptr<Team>>& teams, const Analysis& engine, int rankChoice );
 
     static std::unique_ptr<RankedList<Champion>> createRankedPool( int rankChoice, const RankedList<Champion>& pool );
 };

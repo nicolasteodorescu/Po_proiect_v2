@@ -133,9 +133,6 @@ void DraftTeam::display() const {
     }
 }
 
-bool DraftTeam::isRedSide() const {
-    return side;
-}
 const std::vector<std::string>& DraftTeam::getBans() const {
     return bannedChampions;
 }

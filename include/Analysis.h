@@ -139,7 +139,6 @@ public:
     virtual ~Analysis() = default;
 
     static Analysis& getGlobalInstance();
-    virtual Analysis& getInstance();
 
     void registerChampion( std::shared_ptr<Champion> champ );
 
@@ -160,13 +159,13 @@ public:
 
 class MinorData : public Analysis {
 public:
-    MinorData& getInstance() override;
+    static MinorData& getMinorInstance();
     double analyzeDraft( const Team* blue, const Team* red ) const override;
 };
 
 class MajorData : public Analysis {
 public:
-    MajorData& getInstance() override;
+    static MajorData& getMajorInstance();
     static std::string metaShift( const Team* team, double& bonusOut ) ;
     double analyzeDraft( const Team* blue, const Team* red ) const override;
 };

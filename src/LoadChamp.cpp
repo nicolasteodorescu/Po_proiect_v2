@@ -309,10 +309,10 @@ void LoadChamp::loadChampionData( Analysis& engine, const std::string& jsonPath 
         {"Zyra", ChampionFactory::Template::CONTROL_MAGE},
     });
 
-    for( auto& c : batch )
+    for( const auto& c : batch )
         engine.registerChampion(c);
 
-    for( auto& c : batch ){
+    for( const auto& c : batch ){
         auto it = champWinRates.find(c->getName());
         if( it != champWinRates.end() )
             c->setWinRate(it->second);
@@ -346,8 +346,7 @@ void LoadChamp::loadChampionData( Analysis& engine, const std::string& jsonPath 
     }
 }
 
-void LoadChamp::demonstratePolymorphism(
-    const std::vector<std::shared_ptr<Team>>& teams, Analysis& engine, int rankChoice ){
+void LoadChamp::demonstratePolymorphism( const std::vector<std::shared_ptr<Team>>& teams, const Analysis& engine, int rankChoice ){
     std::cout << "\nDraftTeam\n";
     for( const auto& teamPtr : teams ){
         const Team* base = teamPtr.get();

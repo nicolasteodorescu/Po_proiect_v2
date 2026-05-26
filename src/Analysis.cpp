@@ -5,14 +5,8 @@
 Analysis::Analysis() : championPool("Global Champion Pool") {}
 
 Analysis& Analysis::getGlobalInstance(){
-    static Analysis instance;
-    return instance;
+    return (std::rand() % 2 == 0) ? static_cast<Analysis&>(MinorData::getMinorInstance()) : static_cast<Analysis&>(MajorData::getMajorInstance());
 }
-
-Analysis& Analysis::getInstance(){
-    return getGlobalInstance();
-}
-
 void Analysis::registerChampion( std::shared_ptr<Champion> champ ){
     championPool.add(std::move(champ));
 }
@@ -103,7 +97,7 @@ void Analysis::printLog() const {
 
 const RankedList<Champion>& Analysis::getChampionPool() const { return championPool; }
 
-MinorData& MinorData::getInstance() {
+MinorData& MinorData::getMinorInstance() {
     static MinorData instance;
     return instance;
 }
@@ -116,7 +110,7 @@ double MinorData::analyzeDraft( const Team* blue, const Team* red ) const {
     return score;
 }
 
-MajorData& MajorData::getInstance(){
+MajorData& MajorData::getMajorInstance(){
     static MajorData instance;
     return instance;
 }

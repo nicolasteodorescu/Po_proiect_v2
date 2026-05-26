@@ -61,7 +61,6 @@ public:
     [[nodiscard]] bool isChampionBanned( const std::string& name ) const;
     void display() const override;
 
-    [[nodiscard]] bool isRedSide() const;
     [[nodiscard]] const std::vector<std::string>& getBans() const;
 };
 
