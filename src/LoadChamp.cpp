@@ -27,111 +27,93 @@ std::unordered_map<std::string,
     std::unordered_map<std::string, double>> LoadChamp::matchupData;
 std::unordered_map<std::string, double> LoadChamp::champWinRates;
 
-void LoadChamp::loadMatchupData(const std::string& jsonPath) {
+void LoadChamp::loadMatchupData( const std::string& jsonPath ){
     std::ifstream f(jsonPath);
-    if (!f.is_open()) {
+    if( !f.is_open() ){
         std::cerr << "[LoadChamp] Nu s-a putut deschide: " << jsonPath << "\n";
         return;
     }
 
     std::string content((std::istreambuf_iterator<char>(f)), std::istreambuf_iterator<char>());
 
-    auto extractString = [&](const std::string& src, const std::string& key) -> std::string {
+    auto extractString = [&]( const std::string& src, const std::string& key ) -> std::string {
         std::string search = "\"" + key + "\"";
         size_t pos = src.find(search);
-        if (pos == std::string::npos) return "";
+        if( pos == std::string::npos ) return "";
         pos = src.find('"', pos + search.size());
-        if (pos == std::string::npos) return "";
+        if( pos == std::string::npos ) return "";
         size_t end = src.find('"', pos + 1);
-        if (end == std::string::npos) return "";
+        if( end == std::string::npos ) return "";
         return src.substr(pos + 1, end - pos - 1);
     };
 
-    auto extractDouble = [&](const std::string& src, const std::string& key) -> double {
+    auto extractDouble = [&]( const std::string& src, const std::string& key ) -> double {
         std::string search = "\"" + key + "\"";
         size_t pos = src.find(search);
-        if (pos == std::string::npos) return -1.0;
-            pos = src.find(':', pos + search.size());
-        if (pos == std::string::npos) return -1.0;
-            pos++;
-        while (pos < src.size() && (src[pos] == ' ' || src[pos] == '\n')) pos++;
-            size_t end = pos;
-        while (end < src.size() && (std::isdigit(src[end]) || src[end] == '.' || src[end] == '-'))
+        if( pos == std::string::npos ) return -1.0;
+        pos = src.find(':', pos + search.size());
+        if( pos == std::string::npos ) return -1.0;
+        pos++;
+        while( pos < src.size() && (src[pos] == ' ' || src[pos] == '\n') ) pos++;
+        size_t end = pos;
+        while( end < src.size() && (std::isdigit(src[end]) || src[end] == '.' || src[end] == '-') )
             end++;
-        try {
-            return std::stod(src.substr(pos, end - pos));
-        }
-        catch (...) {
-            return -1.0;
-        }
+        try { return std::stod(src.substr(pos, end - pos)); }
+        catch( ... ) { return -1.0; }
     };
 
     size_t pos = 0;
-    while ((pos = content.find('{', pos)) != std::string::npos) {
-
+    while( (pos = content.find('{', pos)) != std::string::npos ){
         int depth = 0;
         size_t start = pos, end = pos;
-        for (size_t k = pos; k < content.size(); k++) {
-            if (content[k] == '{') depth++;
-            else if (content[k] == '}') {
+        for( size_t k = pos; k < content.size(); k++ ){
+            if( content[k] == '{' ) depth++;
+            else if( content[k] == '}' ){
                 depth--;
-                if (depth == 0) { end = k; break; }
+                if( depth == 0 ){ end = k; break; }
             }
         }
         std::string champBlock = content.substr(start, end - start + 1);
-
-        std::string champName = extractString(champBlock, "name");
-        if (champName.empty()) {
-            pos = end + 1;
-            continue;
-        }
+        std::string champName  = extractString(champBlock, "name");
+        if( champName.empty() ){ pos = end + 1; continue; }
 
         double champWR = extractDouble(champBlock, "championWinRate");
-        if (champWR >= 0.0)
-            champWinRates[champName] = champWR / 100.0;
+        if( champWR >= 0.0 ) champWinRates[champName] = champWR / 100.0;
 
         size_t cpos = champBlock.find("\"counters\"");
-        if (cpos != std::string::npos) {
+        if( cpos != std::string::npos ){
             size_t arrStart = champBlock.find('[', cpos);
             size_t arrEnd   = champBlock.find(']', arrStart);
-            if (arrStart != std::string::npos && arrEnd != std::string::npos) {
+            if( arrStart != std::string::npos && arrEnd != std::string::npos ){
                 std::string countersBlock = champBlock.substr(arrStart, arrEnd - arrStart + 1);
-
                 size_t cobj = 0;
-                while ((cobj = countersBlock.find('{', cobj)) != std::string::npos) {
+                while( (cobj = countersBlock.find('{', cobj)) != std::string::npos ){
                     int d2 = 0;
                     size_t cs = cobj, copy = cobj;
-                    for (size_t k = cobj; k < countersBlock.size(); k++) {
-                        if (countersBlock[k] == '{')
-                            d2++;
-                        else if (countersBlock[k] == '}') {
+                    for( size_t k = cobj; k < countersBlock.size(); k++ ){
+                        if( countersBlock[k] == '{' ) d2++;
+                        else if( countersBlock[k] == '}' ){
                             d2--;
-                            if (d2 == 0) {
-                                copy = k;
-                                break;
-                            }
+                            if( d2 == 0 ){ copy = k; break; }
                         }
                     }
                     std::string counterObj = countersBlock.substr(cs, copy - cs + 1);
-
-                    std::string oppName = extractString(counterObj, "name");
-                    double wr = extractDouble(counterObj, "winRateAgainst");
-
-                    if (!oppName.empty() && wr >= 0.0)
+                    std::string oppName    = extractString(counterObj, "name");
+                    double wr              = extractDouble(counterObj, "winRateAgainst");
+                    if( !oppName.empty() && wr >= 0.0 )
                         matchupData[champName][oppName] = wr / 100.0;
-
                     cobj = copy + 1;
                 }
             }
         }
         pos = end + 1;
     }
-
-    std::cout << "[LoadChamp] JSON incarcat: " << matchupData.size() << " campioni cu date de matchup.\n";
+    std::cout << "[LoadChamp] JSON incarcat: " << matchupData.size()
+              << " campioni cu date de matchup.\n";
 }
 
-void LoadChamp::loadChampionData(Analysis& engine,  const std::string& jsonPath) {
-    auto add = [&](const std::vector<std::pair<std::string, ChampionFactory::Template>>& specs) {
+void LoadChamp::loadChampionData( Analysis& engine, const std::string& jsonPath ){
+    auto add = [&]( const std::vector<std::pair<std::string, ChampionFactory::Template>>& specs ){
         auto part = ChampionFactory::createBatch(specs);
         batch.insert(batch.end(), part.begin(), part.end());
     };
@@ -174,7 +156,7 @@ void LoadChamp::loadChampionData(Analysis& engine,  const std::string& jsonPath)
         {"Elise", ChampionFactory::Template::BRUISER},
         {"Evelynn", ChampionFactory::Template::BRUISER},
         {"Ezreal", ChampionFactory::Template::MARKSMAN},
-        {"Fiddlesticks",ChampionFactory::Template::BRUISER},
+        {"Fiddlesticks", ChampionFactory::Template::BRUISER},
         {"Fiora", ChampionFactory::Template::TANK_FIGHTER},
         {"Fizz", ChampionFactory::Template::ASSASSIN_MAGE},
         {"Galio", ChampionFactory::Template::TANK_FIGHTER},
@@ -187,7 +169,7 @@ void LoadChamp::loadChampionData(Analysis& engine,  const std::string& jsonPath)
         {"Graves", ChampionFactory::Template::BRUISER},
         {"Gwen", ChampionFactory::Template::TANK_FIGHTER},
         {"Hecarim", ChampionFactory::Template::BRUISER},
-        {"Heimerdinger",ChampionFactory::Template::CONTROL_MAGE},
+        {"Heimerdinger", ChampionFactory::Template::CONTROL_MAGE},
         {"Hwei", ChampionFactory::Template::CONTROL_MAGE},
         {"Illaoi", ChampionFactory::Template::TANK_FIGHTER},
         {"Irelia", ChampionFactory::Template::TANK_FIGHTER},
@@ -199,7 +181,7 @@ void LoadChamp::loadChampionData(Analysis& engine,  const std::string& jsonPath)
         {"Jhin", ChampionFactory::Template::MARKSMAN},
         {"Jinx", ChampionFactory::Template::MARKSMAN},
         {"KSante", ChampionFactory::Template::TANK_FIGHTER},
-        {"Kai'sa", ChampionFactory::Template::MARKSMAN},
+        {"KaiSa", ChampionFactory::Template::MARKSMAN},
         {"Kalista", ChampionFactory::Template::MARKSMAN},
         {"Karma", ChampionFactory::Template::ENCHANTER_SUPPORT},
         {"Karthus", ChampionFactory::Template::CONTROL_MAGE},
@@ -299,7 +281,7 @@ void LoadChamp::loadChampionData(Analysis& engine,  const std::string& jsonPath)
         {"Urgot", ChampionFactory::Template::TANK_FIGHTER},
         {"Varus", ChampionFactory::Template::MARKSMAN},
         {"Vayne", ChampionFactory::Template::MARKSMAN},
-        {"Veigar",ChampionFactory::Template::CONTROL_MAGE},
+        {"Veigar", ChampionFactory::Template::CONTROL_MAGE},
         {"VelKoz", ChampionFactory::Template::CONTROL_MAGE},
         {"Vex", ChampionFactory::Template::CONTROL_MAGE},
         {"Vi", ChampionFactory::Template::BRUISER},
@@ -327,17 +309,17 @@ void LoadChamp::loadChampionData(Analysis& engine,  const std::string& jsonPath)
         {"Zyra", ChampionFactory::Template::CONTROL_MAGE},
     });
 
-    for (auto& c : batch)
+    for( auto& c : batch )
         engine.registerChampion(c);
 
-    for (auto& c : batch) {
+    for( auto& c : batch ){
         auto it = champWinRates.find(c->getName());
-        if (it != champWinRates.end())
+        if( it != champWinRates.end() )
             c->setWinRate(it->second);
     }
 
-    for (int i = 0; i < CHAMPMAXX; i++) {
-        for (int j = i + 1; j < CHAMPMAXX; j++) {
+    for( int i = 0; i < CHAMPMAXX; i++ ){
+        for( int j = i + 1; j < CHAMPMAXX; j++ ){
             const std::string& ci = campioni[i];
             const std::string& cj = campioni[j];
 
@@ -345,21 +327,17 @@ void LoadChamp::loadChampionData(Analysis& engine,  const std::string& jsonPath)
             batch[i]->addSynergy(cj, syn);
             batch[j]->addSynergy(ci, syn);
 
-            double wr_i_vs_j = 0.50;
-            double wr_j_vs_i = 0.50;
+            double wr_i_vs_j = 0.50, wr_j_vs_i = 0.50;
 
             auto it_i = matchupData.find(ci);
-            if (it_i != matchupData.end()) {
+            if( it_i != matchupData.end() ){
                 auto it_ij = it_i->second.find(cj);
-                if (it_ij != it_i->second.end())
-                    wr_i_vs_j = it_ij->second;
+                if( it_ij != it_i->second.end() ) wr_i_vs_j = it_ij->second;
             }
-
             auto it_j = matchupData.find(cj);
-            if (it_j != matchupData.end()) {
+            if( it_j != matchupData.end() ){
                 auto it_ji = it_j->second.find(ci);
-                if (it_ji != it_j->second.end())
-                    wr_j_vs_i = it_ji->second;
+                if( it_ji != it_j->second.end() ) wr_j_vs_i = it_ji->second;
             }
 
             engine.addMatchup(ci, cj, wr_i_vs_j);
@@ -368,15 +346,61 @@ void LoadChamp::loadChampionData(Analysis& engine,  const std::string& jsonPath)
     }
 }
 
-void LoadChamp::demonstratePolymorphism(const std::vector<std::shared_ptr<Team>>& teams, Analysis& engine) {
-    std::cout << "\nPolymorphism Demo\n";
-
-    for (const auto& teamPtr : teams) {
+void LoadChamp::demonstratePolymorphism(
+    const std::vector<std::shared_ptr<Team>>& teams, Analysis& engine, int rankChoice ){
+    std::cout << "\nDraftTeam\n";
+    for( const auto& teamPtr : teams ){
         const Team* base = teamPtr.get();
         base->display();
 
-        if (const DraftTeam* dt = dynamic_cast<const DraftTeam*>(base)) {
-            std::cout << "  [Downcast OK -> DraftTeam] side=" << (dt->isRedSide() ? "Red" : "Blue") << " bans=" << dt->getBans().size() << "\n";
+        if( const auto* dt = dynamic_cast<const DraftTeam*>(base) ){
+            std::cout << "  [Downcast OK -> DraftTeam] side="
+                      << (dt->isRedSide() ? "Red" : "Blue")
+                      << " bans=" << dt->getBans().size() << "\n";
         }
     }
+    std::unique_ptr<RankedList<Champion>> ranked =
+        LoadChamp::createRankedPool(rankChoice, engine.getChampionPool());
+
+    ranked->applyRankBonus();
+
+    std::cout << "\nEchipe dupa alegerea rankului:\n";
+    for( const auto& teamPtr : teams ){
+        const Team* base = teamPtr.get();
+        std::cout << base->getName() << "\n";
+        for( const auto& c : base->getRoster() )
+            c->display();
+        std::cout << "Avg WR nou: " << base->getAverageWinRate() * 100 << "%\n";
+    }
+
+    if( teams.size() >= 2 ){
+        double newScore = engine.analyzeDraft(teams[0].get(), teams[1].get());
+        std::cout << "\nScor draft dupa rank bonus:\n";
+        std::cout << "Blue Team advantage score: " << newScore << "\n";
+        if( newScore > 0 )
+            std::cout << "  -> Blue Team castiga draftul!\n";
+        else if( newScore < 0 )
+            std::cout << "  -> Red Team castiga draftul!\n";
+        else
+            std::cout << "  -> Draft egal!\n";
+    }
+}
+
+std::unique_ptr<RankedList<Champion>>
+LoadChamp::createRankedPool( int rankChoice, const RankedList<Champion>& pool ){
+    std::unique_ptr<RankedList<Champion>> result;
+    switch( rankChoice ){
+        case 1:
+            result = std::make_unique<AverageRank>("AverageRank Pool");
+            break;
+        case 2:
+            result = std::make_unique<HighRank>("HighRank Pool");
+            break;
+        default:
+            result = std::make_unique<LowRank>("LowRank Pool");
+            break;
+    }
+    for( const auto& c : pool.getItems() )
+        result->add(c);
+    return result;
 }

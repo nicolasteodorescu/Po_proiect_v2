@@ -139,6 +139,8 @@ add_executable(${MAIN_EXECUTABLE_NAME} main.cpp ${SOURCES}
         src/Team.cpp
         src/LoadChamp.cpp
         include/LoadChamp.h
+        src/MainMenu.cpp
+        include/MainMenu.h
 )
 
 # NOTE: Add all defined targets (e.g. executables, libraries, etc. )

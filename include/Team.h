@@ -16,36 +16,35 @@ protected:
     static int numberTeams;
 
 public:
-    explicit Team(const std::string& name);
-    Team(const std::string& name, std::vector<std::shared_ptr<Champion>> roster);
-    Team(const Team& other);
-    Team& operator=(const Team& other);
+    explicit Team( std::string  name );
+    Team( std::string  name, std::vector<std::shared_ptr<Champion>> roster );
+    Team( const Team& other );
+    Team& operator=( const Team& other );
     virtual ~Team() = default;
 
-    friend std::ostream& operator<<(std::ostream& os, const Team& t);
-    friend std::istream& operator>>(std::istream& is, Team& t);
+    friend std::ostream& operator<<( std::ostream& os, const Team& t );
+    friend std::istream& operator>>( std::istream& is, Team& t );
 
-    // throws TeamFullException if full
-    virtual void addChampion(std::shared_ptr<Champion> champ);
-    void removeChampion(const std::string& name);
+    virtual void addChampion( std::shared_ptr<Champion> champ );
+    void removeChampion( const std::string& name );
 
-    virtual double getAverageWinRate() const;
-    double         getTeamSynergy()   const;
+    [[nodiscard]] virtual double getAverageWinRate() const;
+    [[nodiscard]] double getTeamSynergy() const;
 
     virtual void display() const;
 
-    const Champion& operator[](int idx) const;
+    const Champion& operator[]( int idx ) const;
 
-    const std::string& getName() const;
-    int  getSize() const;
-    bool isFull()  const;
+    [[nodiscard]] const std::string& getName() const;
+    [[nodiscard]] int  getSize() const;
+    [[nodiscard]] bool isFull() const;
 
-    const std::vector<std::shared_ptr<Champion>>& getRoster() const;
+    [[nodiscard]] const std::vector<std::shared_ptr<Champion>>& getRoster() const;
     static int getTotalTeamsCreated();
 };
 
-std::ostream& operator<<(std::ostream& os, const Team& t);
-std::istream& operator>>(std::istream& is, Team& t);
+std::ostream& operator<<( std::ostream& os, const Team& t );
+std::istream& operator>>( std::istream& is, Team& t );
 
 class DraftTeam : public Team {
 private:
@@ -55,19 +54,19 @@ private:
     bool side;
 
 public:
-    DraftTeam(const std::string& name, bool redSide = false);
-    DraftTeam(const DraftTeam& other);
-    DraftTeam& operator=(const DraftTeam& other);
-    virtual ~DraftTeam() override = default;
+    explicit DraftTeam( const std::string& name, bool redSide = false );
+    DraftTeam( const DraftTeam& other );
+    DraftTeam& operator=( const DraftTeam& other );
+    ~DraftTeam() override = default;
 
-    void addChampion(std::shared_ptr<Champion> champ) override;
-    void banChampion(const std::string& name);
-    bool isChampionBanned(const std::string& name) const;
+    void addChampion( std::shared_ptr<Champion> champ ) override;
+    void banChampion( const std::string& name );
+    [[nodiscard]] bool isChampionBanned( const std::string& name ) const;
     void display() const override;
 
-    bool isRedSide()          const;
-    int  getCurrentPickIndex() const;
-    const std::vector<std::string>& getBans() const;
+    [[nodiscard]] bool isRedSide() const;
+    [[nodiscard]] int getCurrentPickIndex() const;
+    [[nodiscard]] const std::vector<std::string>& getBans() const;
 };
 
 #endif // OOP_TEAM_H
