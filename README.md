@@ -15,7 +15,7 @@ Acesta poate indeplinii 5  task-uri:
 
 La functia de Tier list, ia din baza de date toti campionii si arata winrate-urile acestora.
 La functia de Recomandari pe rol, alegeti rolul si arata strict pe acel rol cei mai buni campioni ( din punct de vedere al winrate-ului).
-La funcatia de Cauta campioni, ofera mai multe detalii despre campionul respectiv.
+La functia de Cauta campioni, ofera mai multe detalii despre campionul respectiv.
 
 Iar la functia Analiza draft interactiva sunt folosite metodele de Programare orientata pe obiecte.
 Aici introduceti draftul (cu pick-uri si ban-uri) pentru fiecare dintre echipe iar programul va calcula sinergiile si matchup-urile dintre fiecare campion, rezultand
